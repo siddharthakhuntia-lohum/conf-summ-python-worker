@@ -9,8 +9,12 @@ from langchain.docstore.document import Document
 from langchain.chains.summarize import load_summarize_chain
 import os
 from dotenv import load_dotenv
+import logging
 
 load_dotenv()
+log_format = "%(asctime)s - %(levelname)s - %(module)s - %(lineno)d - %(message)s"
+date_format = "%Y-%m-%d %H:%M:%S"
+logging.basicConfig(level=logging.DEBUG,filename='data.log', filemode='w', format=log_format, datefmt=date_format)
 
 from utils.helper import num_tokens_from_string
 
@@ -35,13 +39,16 @@ def summarize(text: str) -> str:
     text_splitter = CharacterTextSplitter()
     texts = text_splitter.split_text(text)
     docs = [Document(page_content=t) for t in texts]
+    
+    
 
     CURRENT_TOKENS = num_tokens_from_string(text, MODEL_NAME)
+    
+    logging.info(f"Current tokens: {CURRENT_TOKENS}")
 
-    print(f"Current tokens: {CURRENT_TOKENS}")
 
     if CURRENT_TOKENS < MODEL_MAX_TOKENS:
-        print("Summarizing using the 'stuff' chain")
+        logging.info("Summarizing using the 'stuff' chain")
         return stuff_summarize(docs)
 
     prompt_template = """Write a concise summary of the following extracting the key information:
@@ -87,7 +94,7 @@ def stuff_summarize(docs: list) -> str:
 
     # CONSCISE SUMMARY IN BULLET POINTS:"""
 
-    prompt_template = """Write a concise summary of the following extracting the key information:
+    prompt_template = """Write a concise summary with minimum 500 wrords of the following extracting the key information :
 
 
     {text}

@@ -5,8 +5,12 @@ from utils.helper import get_video_id, parse_json_data, parse_transcript, delete
 from utils.get_audio import download_youtube_audio
 from utils.get_transcript_from_whisper import get_transcript_from_whisper
 from summarizer import summarize
+import logging
 
 r = redis.Redis()
+log_format = "%(asctime)s - %(levelname)s - %(module)s - %(lineno)d - %(message)s"
+date_format = "%Y-%m-%d %H:%M:%S"
+logging.basicConfig(level=logging.DEBUG,filename='data.log', filemode='w', format=log_format, datefmt=date_format)
 
 while True:
     # Blocking pop operation, waits until an item is available
@@ -14,19 +18,28 @@ while True:
     json_data = json.loads(data)
     videoURl = parse_json_data(json_data)
     videoId = get_video_id(videoURl)
+    logging.info("Received job for video: %s", videoId)
+    logging.info("Getting transcript for video: %s", videoId)
     transcript = get_transcript(videoId)
+
     if transcript is None:
-        print(f'No transcript found for video: {videoId}')
-        print(f'Downloading audio for video: {videoId}')
+        logging.info("No transcript found for video: %s", videoId)
+        logging.info("Downloading audio for video: %s", videoId)
         audio_file_path = download_youtube_audio(videoURl)
-        print(f"Audio file path: {audio_file_path}")
+        logging.info("Downloaded audio file to: %s", audio_file_path)
         if audio_file_path is None:
-            print(f'Error downloading audio for video: {videoId}')
+            logging.error("Error downloading audio for video: %s", videoId)
             continue
-        print(f'Getting transcript for video: {videoId} using OpenAI API')
+        logging.info(
+            "Getting transcript for video: %s using OpenAI API", videoId)
         transcript = get_transcript_from_whisper(audio_file_path).text
+        logging.info("Generated transcript for video: %s using Whisper", videoId)
+        logging.info("Deleting audio file for video: %s", videoId)
         delete_audio_file(audio_file_path)
     else:
+        logging.info("Transcript found for video: %s", videoId)
         transcript = parse_transcript(transcript)
+    logging.info("Entering summarizer for video: %s", videoId)
     summary = summarize(transcript)
+    logging.info("Summarized video: %s", videoId)
     print(f"Summary: {summary}")
