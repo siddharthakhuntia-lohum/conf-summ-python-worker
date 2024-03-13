@@ -20,6 +20,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['POST'])
 def get_summary_fun():
+    print("Request received")
     data = request.get_json()
     videoURl = parse_json_data(data)
     videoId = get_video_id(videoURl)
