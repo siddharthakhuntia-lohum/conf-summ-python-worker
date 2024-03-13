@@ -3,7 +3,7 @@ from pytube import YouTube
 import os
 
 
-def get_video_id(url):
+def get_video_id(url) -> str:
     """
     Extract the video ID from a YouTube video URL.
 
@@ -21,7 +21,7 @@ def get_video_id(url):
         return None
 
 
-def parse_json_data(json_data):
+def parse_json_data(json_data) -> str:
     """
     Parse JSON data to extract the video URL.
 
@@ -34,7 +34,7 @@ def parse_json_data(json_data):
     return json_data.get('videoURL', None)
 
 
-def parse_transcript(transcript):
+def parse_transcript(transcript) -> str:
     """
     Parse a list of transcript items into a single paragraph.
 
@@ -62,7 +62,7 @@ def num_tokens_from_string(string: str, encoding_name: str) -> int:
     return num_tokens
 
 
-def get_yt_video_metadata(url: str):
+def get_yt_video_metadata(url: str) -> dict:
     """
     Get metadata for a YouTube video using the tiktok API.
 
@@ -75,18 +75,17 @@ def get_yt_video_metadata(url: str):
     yt = YouTube(url)
 
     metadata = {
-        "title": yt.title,
-        "description": yt.description,
-        "author": yt.author,
-        "length": yt.length,
-        "views": yt.views,
-        "rating": yt.rating,
-        "thumbnail_url": yt.thumbnail_url,
-        "publish_date": yt.publish_date,
-        "keywords": yt.keywords,
-        "video_id": yt.video_id,
+        "id": str(yt.video_id),
+        "title": str(yt.title),
+        # "description": yt.description,
+        "publisher": str(yt.author),
+        "length": str(yt.length),
+        # "views": str(yt.views),
+        "rating": str(yt.rating),
+        "thumbnail_url": str(yt.thumbnail_url),
+        "publish_date": str(yt.publish_date.timestamp()),
+        # "keywords": (yt.keywords)
     }
-
     return metadata
 
 

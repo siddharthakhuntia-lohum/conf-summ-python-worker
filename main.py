@@ -1,16 +1,18 @@
 import json
 import redis
 from utils.get_transcript import get_transcript
-from utils.helper import get_video_id, parse_json_data, parse_transcript, delete_audio_file
+from utils.helper import get_video_id, parse_json_data, parse_transcript, delete_audio_file, get_yt_video_metadata
 from utils.get_audio import download_youtube_audio
 from utils.get_transcript_from_whisper import get_transcript_from_whisper
 from summarizer import summarize
 import logging
+from aws_clients.write_to_database import add_item_to_table
 
 r = redis.Redis()
 log_format = "%(asctime)s - %(levelname)s - %(module)s - %(lineno)d - %(message)s"
 date_format = "%Y-%m-%d %H:%M:%S"
-logging.basicConfig(level=logging.DEBUG,filename='data.log', filemode='w', format=log_format, datefmt=date_format)
+logging.basicConfig(level=logging.DEBUG, filename='data.log',
+                    filemode='w', format=log_format, datefmt=date_format)
 
 while True:
     # Blocking pop operation, waits until an item is available
@@ -33,7 +35,8 @@ while True:
         logging.info(
             "Getting transcript for video: %s using OpenAI API", videoId)
         transcript = get_transcript_from_whisper(audio_file_path).text
-        logging.info("Generated transcript for video: %s using Whisper", videoId)
+        logging.info(
+            "Generated transcript for video: %s using Whisper", videoId)
         logging.info("Deleting audio file for video: %s", videoId)
         delete_audio_file(audio_file_path)
     else:
@@ -42,4 +45,12 @@ while True:
     logging.info("Entering summarizer for video: %s", videoId)
     summary = summarize(transcript)
     logging.info("Summarized video: %s", videoId)
-    print(f"Summary: {summary}")
+    metadata = get_yt_video_metadata(videoURl)
+    logging.info("Got metadata for video: %s", videoId)
+    logging.info("Metadata: %s", metadata)
+    logging.info("Adding item to table for video: %s", videoId)
+    response = add_item_to_table(metadata, summary)
+    logging.info("Added item to table for video: %s", videoId)
+    logging.info("Job complete for video: %s", videoId)
+    print("Job complete for video: ", videoId)
+    print(response)

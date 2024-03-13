@@ -102,11 +102,11 @@ def stuff_summarize(docs: list) -> str:
 
     CONCISE SUMMARY:"""
 
-    BULLET_POINT_PROMPT = PromptTemplate(template=prompt_template,
+    PROMPT = PromptTemplate(template=prompt_template,
                                          input_variables=["text"])
     chain = load_summarize_chain(llm,
                                  chain_type="stuff",
-                                 prompt=BULLET_POINT_PROMPT)
+                                 prompt=PROMPT)
 
     output_summary = chain.invoke(docs)
 
