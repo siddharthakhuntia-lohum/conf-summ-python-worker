@@ -5,13 +5,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_DYNAMODB_TABLE_NAME = os.getenv('AWS_DYNAMODB_TABLE_NAME')
 AWS_REGION = os.getenv('AWS_REGION')
 
 
-def add_item_to_table( metadata: dict, summary: str) -> dict:
+def add_item_to_table(metadata: dict, summary: str) -> dict:
     """
     Add an item to the specified DynamoDB table.
 
@@ -26,9 +24,7 @@ def add_item_to_table( metadata: dict, summary: str) -> dict:
     try:
 
         dynamodb_client = boto3.resource('dynamodb',
-                                         aws_access_key_id=AWS_ACCESS_KEY_ID,
-                                         aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-                                         region_name =AWS_REGION )
+                                         region_name=AWS_REGION)
         print(AWS_DYNAMODB_TABLE_NAME)
         table = dynamodb_client.Table(AWS_DYNAMODB_TABLE_NAME)
         print(table)
