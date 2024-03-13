@@ -32,7 +32,8 @@ def get_summary_fun():
         # logging.info("Downloading audio for video: %s", videoId)
         audio_file_path = download_youtube_audio(videoURl)
         # logging.info("Downloaded audio file to: %s", audio_file_path)
-        if audio_file_path is None:
+        # if audio_file_path is None:
+            
             # logging.error("Error downloading audio for video: %s", videoId)
         # logging.info(
             # "Getting transcript for video: %s using OpenAI API", videoId)
