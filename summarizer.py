@@ -9,12 +9,12 @@ from langchain.docstore.document import Document
 from langchain.chains.summarize import load_summarize_chain
 import os
 from dotenv import load_dotenv
-import logging
+# import logging
 
 load_dotenv()
-log_format = "%(asctime)s - %(levelname)s - %(module)s - %(lineno)d - %(message)s"
-date_format = "%Y-%m-%d %H:%M:%S"
-logging.basicConfig(level=logging.DEBUG,filename='data.log', filemode='w', format=log_format, datefmt=date_format)
+# log_format = "%(asctime)s - %(levelname)s - %(module)s - %(lineno)d - %(message)s"
+# date_format = "%Y-%m-%d %H:%M:%S"
+# logging.basicConfig(level=logging.DEBUG,filename='data.log', filemode='w', format=log_format, datefmt=date_format)
 
 from utils.helper import num_tokens_from_string
 
@@ -44,11 +44,11 @@ def summarize(text: str) -> str:
 
     CURRENT_TOKENS = num_tokens_from_string(text, MODEL_NAME)
     
-    logging.info(f"Current tokens: {CURRENT_TOKENS}")
+    # logging.info(f"Current tokens: {CURRENT_TOKENS}")
 
 
     if CURRENT_TOKENS < MODEL_MAX_TOKENS:
-        logging.info("Summarizing using the 'stuff' chain")
+        # logging.info("Summarizing using the 'stuff' chain")
         return stuff_summarize(docs)
 
     prompt_template = """Write a concise summary of the following extracting the key information:
