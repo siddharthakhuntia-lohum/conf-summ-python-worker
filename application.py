@@ -15,7 +15,7 @@ from flask import Flask, jsonify, request
                     # filemode='w', format=log_format, datefmt=date_format)
 
 
-app = Flask(__name__)
+application = app = Flask(__name__)
 
 
 @app.route('/', methods=['POST'])
