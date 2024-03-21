@@ -9,8 +9,8 @@ from aws_clients.write_to_database import add_item_to_table
 from flask import Flask, jsonify, request
 
 
-log_format = "%(asctime)s - %(levelname)s - %(module)s - %(lineno)d - %(message)s"
-date_format = "%Y-%m-%d %H:%M:%S"
+# log_format = "%(asctime)s - %(levelname)s - %(module)s - %(lineno)d - %(message)s"
+# date_format = "%Y-%m-%d %H:%M:%S"
 # # logging.basicConfig(level=logging.DEBUG, filename='data.log',
                     # filemode='w', format=log_format, datefmt=date_format)
 
@@ -64,4 +64,4 @@ def get_summary_fun():
 if __name__ == '__main__':
 
     # app.run(debug=True)
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=8000)
