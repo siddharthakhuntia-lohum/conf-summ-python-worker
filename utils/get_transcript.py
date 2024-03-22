@@ -13,7 +13,8 @@ def get_transcript(video_id):
     """
     try:
         transcript = YouTubeTranscriptApi.get_transcript(video_id=video_id)
-        return transcript
+        print(transcript)
+        return ""
     except (NoTranscriptFound, CouldNotRetrieveTranscript):
         return None
     except Exception as e:

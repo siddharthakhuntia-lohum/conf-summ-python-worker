@@ -44,6 +44,7 @@ def parse_transcript(transcript) -> str:
     Returns:
         str: The concatenated text from all transcript items as a single paragraph.
     """
+    print(transcript)
     return " ".join(item['text'] for item in transcript).strip()
 
 

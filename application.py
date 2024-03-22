@@ -6,41 +6,36 @@ from utils.get_transcript_from_whisper import get_transcript_from_whisper
 from summarizer import summarize
 # import logging
 from aws_clients.write_to_database import add_item_to_table
-from flask import Flask, jsonify, request
 
 
 # log_format = "%(asctime)s - %(levelname)s - %(module)s - %(lineno)d - %(message)s"
 # date_format = "%Y-%m-%d %H:%M:%S"
 # # logging.basicConfig(level=logging.DEBUG, filename='data.log',
-                    # filemode='w', format=log_format, datefmt=date_format)
+# filemode='w', format=log_format, datefmt=date_format)
 
 
-application = app = Flask(__name__)
-
-
-@app.route('/', methods=['POST'])
-def get_summary_fun():
-    print("Request received")
-    data = request.get_json()
-    videoURl = parse_json_data(data)
-    videoId = get_video_id(videoURl)
+def process_jobs(job):
+    print("JOb received")
+    # videoURl = parse_json_data(job)
+    videoURL = "https://www.youtube.com/watch?v=fJ9rUzIMcZQ"
+    videoId = get_video_id(videoURL)
     # logging.info("Received job for video: %s", videoId)
     # logging.info("Getting transcript for video: %s", videoId)
     video_transcript = get_transcript(videoId)
-
+    print(video_transcript)
     if video_transcript is None:
         # logging.info("No transcript found for video: %s", videoId)
         # logging.info("Downloading audio for video: %s", videoId)
-        audio_file_path = download_youtube_audio(videoURl)
+        audio_file_path = download_youtube_audio(videoURL)
         # logging.info("Downloaded audio file to: %s", audio_file_path)
         # if audio_file_path is None:
-            
-            # logging.error("Error downloading audio for video: %s", videoId)
+
+        # logging.error("Error downloading audio for video: %s", videoId)
         # logging.info(
-            # "Getting transcript for video: %s using OpenAI API", videoId)
+        # "Getting transcript for video: %s using OpenAI API", videoId)
         video_transcript = get_transcript_from_whisper(audio_file_path).text
         # logging.info(
-            # "Generated transcript for video: %s using Whisper", videoId)
+        # "Generated transcript for video: %s using Whisper", videoId)
         # logging.info("Deleting audio file for video: %s", videoId)
         delete_audio_file(audio_file_path)
     else:
@@ -49,7 +44,7 @@ def get_summary_fun():
     # logging.info("Entering summarizer for video: %s", videoId)
     video_summary = summarize(video_transcript)
     # logging.info("Summarized video: %s", videoId)
-    video_metadata = get_yt_video_metadata(videoURl)
+    video_metadata = get_yt_video_metadata(videoURL)
     # logging.info("Got metadata for video: %s", videoId)
     # logging.info("Metadata: %s", video_metadata)
     # logging.info("Adding item to table for video: %s", videoId)
@@ -57,11 +52,7 @@ def get_summary_fun():
     # logging.info("Added item to table for video: %s", videoId)
     # logging.info("Job complete for video: %s", videoId)
     print("Job complete for video: ", videoId)
-    return jsonify(videoId)
+    return videoId
 
 
-# driver function
-if __name__ == '__main__':
-
-    # app.run(debug=True)
-    app.run(host='0.0.0.0', port=80)
+process_jobs("https://www.youtube.com/watch?v=2xomWWncop0")
